@@ -1,1 +1,175 @@
 # Product-Management-System
+
+## Backend
+<details>
+  <summary><strong>⚙️ Setup & Installation Instructions</strong></summary>
+
+#### :white_check_mark: Clone the repository 
+- git clone https://github.com/anhkiet18072002/Product-Management-System.git
+- cd backend
+#### :white_check_mark: Install dependencies
+- yarn install
+#### :white_check_mark: Update file .env
+- Change DATABASE_URL in file .env to your url
+#### :white_check_mark: Generate prisma and push db
+- yarn prisma generate
+- yarn prisma db push
+- yarn prisma db seed to get example database
+#### :white_check_mark: Start the server
+- yarn start:dev
+
+</details>
+
+<details>
+<summary> 💡 API documentation </summary>
+
+   <br>
+   
+I use Swagger (OpenAPI) to provide detailed API documentation for this project.
+You can access the Swagger UI at: http://localhost:3001/docs
+</details>
+
+
+
+<details>
+<summary>💡 Explanation of caching, optimization strategies, and like feature </summary>
+   <br>
+<details>
+  <summary>🧠 Caching Explanation</summary>
+
+  <br>
+
+  This project uses a custom `CacheInterceptor` to improve performance and reduce database load by caching responses of `GET` requests — especially for endpoints like `/products`.
+
+  ## 🔧 How It Works
+
+  ### ✅ For `GET` Requests:
+  - When a `GET` request is received:
+    - A **cache key** is created from the request’s `originalUrl`.
+    - The cache manager checks if a cached response exists:
+      - If **found**, the cached response is returned immediately.
+      - If **not found**, the request continues to the controller, and the result is **stored in cache** with a TTL (Time-To-Live) of 60 seconds.
+    - If the URL starts with `/products`, the cache key is added to a `productCacheKeys` set for future invalidation.
+
+  ### ❌ For `POST`, `PUT`, `PATCH`, `DELETE` Requests to `/products`:
+  - The interceptor:
+    - Deletes all cached entries related to `/products` using the stored keys.
+    - Clears the `productCacheKeys` set.
+    - Proceeds with the request as usual.
+
+  ## 📌 Benefits
+  - ⚡ **Faster response times**: Cached data is served quickly without processing.
+  - 🧠 **Reduces database queries**: Avoids unnecessary reads from the database.
+  - 🧹 **Smart invalidation**: Automatically clears cache when products are created, updated, or deleted.
+
+</details>
+
+<details>
+  <summary>🧠 Optimization Strategies</summary>
+
+ <br>
+ 
+This project follows a **DRY (Don't Repeat Yourself)** principle by implementing a reusable `BaseService` class. The `BaseService` encapsulates common CRUD logic and query processing, allowing other resource-specific services to extend it with minimal boilerplate.
+
+### 🔍 Key Benefits
+
+- ✅ **Code Reuse**: All services can inherit and reuse `create`, `findAll`, `findOne`, `update`, and `remove` methods.
+- ✅ **Centralized Logic**: Search, sorting, pagination, and field selection logic are handled in one place.
+- ✅ **Cleaner Services**: Individual resource services focus only on resource-specific logic and configurations.
+
+### 📦 Features in `BaseService`
+
+- **Pagination & Limit Handling**  
+  Ensures a safe max limit of 1000 records per request.
+  
+- **Sorting Logic**  
+  Supports dynamic sorting via `?sort=field|asc|desc`.
+
+- **Search with `OR` Conditions**  
+  Allows case-insensitive search across defined fields using Prisma’s `contains`.
+
+- **Field Whitelisting**  
+  Only allows update of fields defined in the Prisma schema to prevent unexpected behavior.
+
+- **Dynamic `select` Support**  
+  Accepts custom field selections while defaulting to a shared `defaultSelect`.
+
+### 🏗️ How to Use
+
+To use the base service for a specific model:
+
+```ts
+@Injectable()
+export class ProductService extends BaseService {
+  defaultSelect: Prisma.ProductSelect = {
+    ...baseSelect,
+    name: true
+  };
+
+  defaultSearchFields?: string[] = ['name'];
+
+  constructor(readonly private prisma: PrismaService) {
+    super(prisma.product);
+  }
+}
+```
+</details>
+<details>
+  <summary>🧠 Like feature</summary>
+
+  <br>
+
+  This project implements a **like/unlike** feature for products. Each user can **like a product once**, and likes can be **toggled** (liked → unliked → liked...).
+
+### 🧩 How It Works
+
+- A **many-to-many relation** is created between `User` and `Product` using a join table called `product_like`.
+- The `product_like` table includes:
+  - `userId` – the user who liked
+  - `productId` – the product that was liked
+
+### 🔁 Toggle Behavior
+
+When a user likes/unlikes a product, the following logic is applied:
+
+1. **Check if the user already liked the product**:
+    - Search the `product_like` table for a record with both `userId` and `productId`.
+
+2. **If a record exists**:
+    - The user already liked the product.
+    - The system deletes the record from `product_like`.
+    - Response: `{ message: 'Unlike' }`
+
+3. **If no record exists**:
+    - The user has not liked the product yet.
+    - A new record is inserted into `product_like`.
+    - Response: `{ message: 'Like' }`
+
+```ts
+// Simplified logic
+if (userHasLiked) {
+  await prisma.product_like.delete(...);
+  return { message: 'Unlike' };
+} else {
+  await prisma.product_like.create(...);
+  return { message: 'Like' };
+}
+```
+
+### 🔢 Tracking the Number of Likes
+
+The number of likes for each product is tracked by counting how many users have liked that product. 
+
+This is done by querying the product_like table — a many-to-many relationship table between User and Product — and counting all entries with the matching productId.
+
+```ts
+const numberOfLike = await this.prisma.productLike.count({
+  where: { productId: id },
+});
+return numberOfLike
+```
+✅ This method ensures a real-time and accurate count of likes for each product.
+
+🔄 The count updates automatically when a user likes or unlikes the product.
+</details>
+</details>
