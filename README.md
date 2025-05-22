@@ -43,7 +43,7 @@ You can access the Swagger UI at: http://localhost:3001/docs
 
   ## 🔧 How It Works
 
-  ### ✅ For `GET` Requests:
+  #### ✅ For `GET` Requests:
   - When a `GET` request is received:
     - A **cache key** is created from the request’s `originalUrl`.
     - The cache manager checks if a cached response exists:
@@ -51,13 +51,13 @@ You can access the Swagger UI at: http://localhost:3001/docs
       - If **not found**, the request continues to the controller, and the result is **stored in cache** with a TTL (Time-To-Live) of 60 seconds.
     - If the URL starts with `/products`, the cache key is added to a `productCacheKeys` set for future invalidation.
 
-  ### ❌ For `POST`, `PUT`, `PATCH`, `DELETE` Requests to `/products`:
+  #### ❌ For `POST`, `PUT`, `PATCH`, `DELETE` Requests to `/products`:
   - The interceptor:
     - Deletes all cached entries related to `/products` using the stored keys.
     - Clears the `productCacheKeys` set.
     - Proceeds with the request as usual.
 
-  ## 📌 Benefits
+  ### 📌 Benefits
   - ⚡ **Faster response times**: Cached data is served quickly without processing.
   - 🧠 **Reduces database queries**: Avoids unnecessary reads from the database.
   - 🧹 **Smart invalidation**: Automatically clears cache when products are created, updated, or deleted.
@@ -172,4 +172,80 @@ return numberOfLike
 
 🔄 The count updates automatically when a user likes or unlikes the product.
 </details>
+</details>
+
+
+## Frontend
+<details>
+  <summary><strong>⚙️ Setup & Installation Instructions</strong></summary>
+
+#### :white_check_mark: Clone the repository 
+- git clone https://github.com/anhkiet18072002/Product-Management-System.git
+- cd frontend
+#### :white_check_mark: Install dependencies
+- yarn install
+#### :white_check_mark: Start the server
+- yarn dev
+</details>
+
+
+<details>
+  <summary>🔐 Authentication & Access Control</summary>
+
+<br>
+
+  - ✅ **Users must log in before adding or liking a product**  
+- 👀 **Guest users can only view products**
+
+---
+
+##### ⚙️ Middleware Authentication
+
+The website uses middleware to:
+
+- 🚫 Block unauthenticated users from accessing the **Add Product** page (e.g., `/admin/product/add`).  
+- 🔑 Check for a valid **accessToken** in cookies before allowing users to like a product.  
+- 🔄 Redirect users to the **Login** page (`/login`) if they are not authenticated.
+
+---
+
+##### 👍 Like Feature Access Control
+
+Before a user can like or unlike a product, the system verifies whether they are logged in by checking the presence of an **accessToken**.
+
+- ❌ If the user is not logged in, they will be redirected to the login page.
+
+---
+</details>
+
+<details>
+  <summary>💡 Web documentation</summary>
+  <br> 
+  
+### 🔐 Authentication & Post-login Behavior
+- After a successful login, users are redirected to the **Admin Dashboard** (`/admin/dashboard`).
+- Users can navigate to the **Product** page via the navigation menu on the left sidebar.
+
+---
+
+### 📋 Product Page Features
+
+- The product page displays a **list view** of products combined with **pagination** for easy browsing.
+- Each product entry shows:
+  - **Name**
+  - **Price**
+  - **Category**
+  - **Subcategory**
+  - **Number of like**
+- Users can **like** products directly from this list.
+
+---
+
+### ⚠️ Special Admin Privileges
+
+- When logged in as the admin user with the email **`admin@example.com`**:
+  - The **Like** button is replaced with **Edit** and **Delete** actions.
+  - Only the admin has the rights to **edit** or **delete** products.
+  
+---
 </details>
