@@ -142,7 +142,7 @@ const Page = () => {
     };
 
     fetchLikes();
-  }, [data]);
+  }, [data, idUser]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -370,6 +370,7 @@ const Page = () => {
       </Grid>
 
       {/* Skill list */}
+
       <Box sx={{ marginTop: "20px" }}>
         <DataGrid
           columns={columns}
