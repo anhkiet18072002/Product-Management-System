@@ -190,6 +190,51 @@ return numberOfLike
 
 
 <details>
+  <summary>💡 Web documentation</summary>
+  <br> 
+  
+### 🚀 Getting Started
+
+- Initially, users can access the admin interface by visiting:
+  - `http://localhost:3000/admin`  
+  - or `http://localhost:3000/admin/dashboard`
+
+- These pages provide the basic layout and core features of the admin panel.
+
+- From the dashboard, users can navigate to the **Product** page using the left-side navigation menu.
+
+---
+
+### 🔐 Authentication & Post-login Behavior
+- After a successful login, users are redirected to the **Admin Dashboard** (`/admin/dashboard`).
+- Users can navigate to the **Product** page via the navigation menu on the left sidebar.
+
+---
+
+### 📋 Product Page Features
+
+- The product page displays a **list view** of products combined with **pagination** for easy browsing.
+- Each product entry shows:
+  - **Name**
+  - **Price**
+  - **Category**
+  - **Subcategory**
+  - **Number of like**
+- Users can **like** products directly from this list.
+
+---
+
+### ⚠️ Special Admin Privileges
+
+- When logged in as the admin user with the email **`admin@example.com`**:
+  - The **Like** button is replaced with **Edit** and **Delete** actions.
+  - Only the admin has the rights to **edit** or **delete** products.
+  
+---
+</details>
+
+
+<details>
   <summary>🔐 Authentication & Access Control</summary>
 
 <br>
@@ -218,34 +263,4 @@ Before a user can like or unlike a product, the system verifies whether they are
 ---
 </details>
 
-<details>
-  <summary>💡 Web documentation</summary>
-  <br> 
-  
-### 🔐 Authentication & Post-login Behavior
-- After a successful login, users are redirected to the **Admin Dashboard** (`/admin/dashboard`).
-- Users can navigate to the **Product** page via the navigation menu on the left sidebar.
 
----
-
-### 📋 Product Page Features
-
-- The product page displays a **list view** of products combined with **pagination** for easy browsing.
-- Each product entry shows:
-  - **Name**
-  - **Price**
-  - **Category**
-  - **Subcategory**
-  - **Number of like**
-- Users can **like** products directly from this list.
-
----
-
-### ⚠️ Special Admin Privileges
-
-- When logged in as the admin user with the email **`admin@example.com`**:
-  - The **Like** button is replaced with **Edit** and **Delete** actions.
-  - Only the admin has the rights to **edit** or **delete** products.
-  
----
-</details>
