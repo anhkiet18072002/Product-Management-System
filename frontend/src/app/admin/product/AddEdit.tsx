@@ -20,7 +20,7 @@ import { FileImageOutlined, UploadOutlined } from "@ant-design/icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useQueryClient } from "react-query";
 import { number, object, string } from "yup";
@@ -70,8 +70,8 @@ const AddEdit = (props: AddEditProps) => {
       ? {
           name: data.name,
           price: data.price,
-          categoryId: data.categoryId,
-          subcategoryId: data.subcategoryId,
+          categoryId: data.category?.id,
+          subcategoryId: data.subcategory?.id,
         }
       : {
           name: "",
@@ -95,7 +95,7 @@ const AddEdit = (props: AddEditProps) => {
     ),
   });
 
-  const selectedCategoryId = watch("categoryId") ?? "";
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
   const filteredSubcategories = subcategories.filter(
     (item) => item.category.id === selectedCategoryId
@@ -104,13 +104,20 @@ const AddEdit = (props: AddEditProps) => {
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    // Reset subcategoryId khi categoryId thay đổi
-    setValue("subcategoryId", "");
-    setInputValue("");
+    if (data?.category?.id) {
+      setSelectedCategoryId(data.category.id);
+    }
+  }, [data?.category?.id]);
+
+  const hasMounted = useRef(false);
+  useEffect(() => {
+    if (hasMounted.current) {
+      setValue("subcategoryId", "");
+      setInputValue("");
+    }
   }, [selectedCategoryId]);
 
   const onSubmit = async (payload: Record<string, any>) => {
-    console.log(payload);
     if (data) {
       editProduct(
         { ...payload, id: data.id },
@@ -237,6 +244,8 @@ const AddEdit = (props: AddEditProps) => {
                           getOptionLabel={(option) => option.name}
                           onChange={(value: any) => {
                             onChange(value?.id);
+                            hasMounted.current = true;
+                            setSelectedCategoryId(value?.id ?? "");
                           }}
                           options={categories}
                           placeholder="Select Category"
