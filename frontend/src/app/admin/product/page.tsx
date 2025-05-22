@@ -105,7 +105,7 @@ const Page = () => {
   useEffect(() => {
     // setProducts((data?.data as ProductType[]) || []);
     const fetchLikes = async () => {
-      if (!data?.data || !idUser) return;
+      if (!data?.data) return;
       setLoading(true);
 
       const productList = data.data as ProductType[];
