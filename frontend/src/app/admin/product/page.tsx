@@ -105,7 +105,7 @@ const Page = () => {
   useEffect(() => {
     // setProducts((data?.data as ProductType[]) || []);
     const fetchLikes = async () => {
-      if (!data?.data) return;
+      if (!data?.data || !idUser) return;
       setLoading(true);
 
       const productList = data.data as ProductType[];
@@ -258,11 +258,12 @@ const Page = () => {
         },
       },
       {
-        field: "NumberOfLike",
+        field: "numberOfLike",
         flex: 0.2,
         headerName: "Number of like",
         renderCell: (params: GridCellParams<ProductWithLike>) => {
           const { row } = params;
+
           return (
             <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
               <Typography sx={{ fontSize: "14px" }}>

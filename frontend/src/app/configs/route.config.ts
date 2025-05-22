@@ -29,7 +29,7 @@ export const API_ROUTES = {
     INDEX: "subcategories",
   },
   PRODUCT_LIKE: {
-    INDEX: "product-like",
+    INDEX: "product_like",
   },
 };
 
