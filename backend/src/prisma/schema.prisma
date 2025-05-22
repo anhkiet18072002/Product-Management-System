@@ -1,0 +1,87 @@
+generator client {
+  binaryTargets = ["native", "linux-musl"]
+  provider      = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  username String @unique
+  email String @unique
+  password String 
+
+  productLikes ProductLike[]
+
+  @@map("user")
+}
+
+
+
+model Product {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  price        Float
+  category Category? @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  categoryId String? @db.ObjectId
+
+  subcategory Subcategory? @relation(fields: [subcategoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  subcategoryId String? @db.ObjectId
+
+  productLikes ProductLike[]
+   @@map("product")
+}
+
+model Category{
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  description String?
+
+  subcategories  Subcategory[]
+  products Product[]
+   @@map("category")
+}
+
+model Subcategory{
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  description String?
+
+  category Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade )
+  categoryId String @db.ObjectId
+
+  products Product[]
+   @@map("subcategory")
+}
+
+model ProductLike{
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  product Product @relation(fields: [productId], references: [id])
+  productId String @db.ObjectId
+
+  @@unique([userId, productId])
+   @@map("product_like")
+}
+
+
