@@ -21,8 +21,8 @@ const Page = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "admin@example.com",
-      password: "Apple123@",
+      email: "",
+      password: "",
     },
     mode: "onChange",
     resolver: yupResolver(
