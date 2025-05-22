@@ -21,5 +21,5 @@ export class CreateProductDto extends CreateBaseDto {
   @ApiProperty({ description: 'Subcategory of the project', required: false })
   @IsOptional()
   @IsString()
-  subcategoryId: string;
+  subcategoryId?: string;
 }

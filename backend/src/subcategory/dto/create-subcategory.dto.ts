@@ -17,7 +17,7 @@ export class CreateSubcategoryDto extends CreateBaseDto {
   description?: string;
 
   @ApiProperty({
-    description: 'category contains subcategory',
+    description: 'Category contains subcategory',
     required: true,
   })
   @IsString()

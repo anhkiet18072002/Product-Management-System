@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { CreateBaseDto } from 'src/core/dto/crete-base.dto';
 
 export class CreateUserDto extends CreateBaseDto {
@@ -17,4 +17,11 @@ export class CreateUserDto extends CreateBaseDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+}
+
+export class FindUserByEmailDto {
+  @ApiProperty({ description: 'Email of the user', required: true })
+  @IsString()
+  @IsNotEmpty()
+  email: string;
 }

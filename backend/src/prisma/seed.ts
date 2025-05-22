@@ -2,15 +2,23 @@ import { PrismaClient } from '@prisma/client';
 import { CategorySeed } from './seed/category.seed';
 import { subcategorySeed } from './seed/subcategory.seed';
 import { UserSeed } from './seed/user.seed';
+import { hash } from 'argon2';
 
 const prisma = new PrismaClient();
 
 const main = async () => {
   // seed user
   await Promise.all(
-    UserSeed.map(({ email, username, password }) =>
-      prisma.user.create({ data: { email, username, password } }),
-    ),
+    UserSeed.map(async ({ email, username, password }) => {
+      const hashedPassword = await hash(password);
+      return prisma.user.create({
+        data: {
+          email,
+          username,
+          password: hashedPassword,
+        },
+      });
+    }),
   );
 
   // seed category
