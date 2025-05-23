@@ -9,12 +9,9 @@
 - cd backend
 #### :white_check_mark: Install dependencies
 - yarn install
-#### :white_check_mark: Update file .env
+#### :white_check_mark: If you want to use your database
 - Change DATABASE_URL in file .env to your url
-#### :white_check_mark: Generate prisma and push db
-- yarn prisma generate
-- yarn prisma db push
-- yarn prisma db seed to get example database
+- yarn prisma db seed to get sample database
 #### :white_check_mark: Start the server
 - yarn start:dev
 
